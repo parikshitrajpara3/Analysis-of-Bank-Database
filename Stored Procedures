@@ -1,0 +1,197 @@
+--Q1. Create a view to get all customers with checking account from ON province. 
+
+DROP VIEW VW_Customer_ON;
+GO
+
+CREATE VIEW VW_Customer_ON AS
+SELECT DISTINCT c.* FROM Customer c
+JOIN Account a
+ON c.AccountID = a.AccountId
+JOIN AccountType at
+ON a.AccountTypeID = at.AccountTypeID
+WHERE at.AccountTypeDescription = 'Checking' and c.State = 'ON';
+GO
+
+--Q2. Create a view to get all customers with total account balance (including interest rate) greater than 5000. 
+
+DROP VIEW VW_Customer_AMT;
+GO
+
+CREATE VIEW VW_Customer_ON AS
+SELECT c.CustomerFirstName, SUM(a.CurrentBalance) AS Ac_Balance, SUM(a.CurrentBalance + (a.CurrentBalance * s.InterestSavingRatesID)/100) AS Total_Ac_Balance 
+FROM Customer c
+JOIN Account a
+ON c.AccountID = a.AccountId
+JOIN SavingsInterestRates s
+ON a.InterestSavingRatesID = s.InterestSavingRatesID 
+GROUP BY c.CustomerFirstName
+HAVING SUM(a.CurrentBalance + (a.CurrentBalance * s.InterestRatesValue)/100) > 5000;
+GO
+
+--Q3. Create a view to get counts of checking and savings accounts by customer. 
+
+DROP VIEW VW_Customer_ACC;
+GO
+
+CREATE VIEW VW_Customer_ACC 
+AS
+SELECT c.CustomerFirstName, at.AccountTypeDescription, COUNT(*) AS Total_AC_Types FROM Customer c
+JOIN Account a
+ON c.AccountID = a.AccountId
+JOIN AccountType at
+ON a.AccountTypeID = at.AccountTypeID
+GROUP BY c.CustomerFirstName, at.AccountTypeDescription;
+GO
+
+--Q4. Create a view to get any particular user�s login and password using AccountId. 
+
+DROP VIEW VW_Account_UL;
+GO
+
+CREATE VIEW VW_Account_UL 
+AS
+SELECT DISTINCT ul.UserLogin, ul.UserPassword
+FROM UserLogins ul
+JOIN LoginAccount la
+ON ul.UserLoginID = la.UserLoginID
+--JOIN Account a
+--ON la.AccountID = a.AccountID;
+WHERE la.AccountID = '1'
+GO;
+
+
+--Q5. Create a view to get all customers� overdraft amount. 
+
+DROP VIEW VW_Customer_OD;
+GO
+
+CREATE VIEW VW_Customer_OD 
+AS
+SELECT DISTINCT c.CustomerFirstName, o.OverDraftAmount
+FROM OverDraftLog o
+JOIN Customer c
+ON o.AccountID = c.AccountID;
+GO
+
+--Q6. Create a stored procedure to add "User_" as a prefix to everyone's login (username). 
+
+DROP PROCEDURE sp_Update_Login;
+GO
+
+CREATE PROCEDURE sp_Update_Login
+AS
+UPDATE UserLogins
+SET UserLogin = Concat('User_', UserLogin);
+GO
+EXEC sp_Update_Login;
+GO
+
+--Q7. Create a stored procedure that accepts AccountId as a parameter and returns customer's full name. 
+
+DROP PROCEDURE sp_Customer_Details;
+GO
+
+CREATE PROCEDURE sp_Customer_Details @AccountID INT
+AS
+SELECT c.CustomerFirstName + ' ' + c.CustomerMIddleInitial + ' ' + c.CustomerLastName AS Customer_Full_Name
+FROM Customer c
+JOIN Account a
+ON c.AccountID = a.AccountId
+WHERE a.AccountID = @AccountID;
+GO
+
+EXEC sp_Costumer_Details 2;
+GO
+
+
+--Q8. Create a stored procedure that returns error logs inserted in the last 24 hours. 
+
+DROP PROCEDURE sp_Errors_24;
+GO
+
+CREATE PROCEDURE sp_Errors_24
+AS
+SELECT * FROM LoginErrorLog
+WHERE  ErrorTime BETWEEN DATEADD(hh, -24, GETDATE()) AND GETDATE();
+GO
+
+EXEC sp_Errors_24;
+GO
+
+--Q9. Create a stored procedure that takes a deposit as a parameter and updates CurrentBalance value for that particular account.  
+
+DROP PROCEDURE sp_Update_cBalance_After_Deposit;
+GO
+
+CREATE PROCEDURE sp_Update_cBalance_After_Deposit @AccountID INT, @Deposit INT
+AS
+UPDATE Account
+SET CurrentBalance = CurrentBalance + @Deposit
+where AccountID = @AccountID;
+GO
+
+EXEC sp_Update_cBalance_After_Deposit 3, 300;
+GO
+
+--Q10. Create a stored procedure that takes a withdrawal amount as a parameter and updates CurrentBalance value for that particular account. 
+
+DROP PROCEDURE sp_Update_cBalance_After_Withdraw;
+GO
+
+CREATE PROCEDURE sp_Update_cBalance_After_Withdraw @AccountID INT, @Withdraw INT
+AS
+UPDATE Account
+SET CurrentBalance = CurrentBalance - @Withdraw
+WHERE AccountID = @AccountID;
+GO
+
+EXEC sp_Update_cBalance_After_Withdraw 3, 300;
+GO
+
+
+--Q11. Create a stored procedure to remove all security questions for a particular login. 
+
+DROP PROCEDURE sp_Delete_Question;
+GO
+
+CREATE PROCEDURE sp_Delete_Question @UserLoginID SMALLINT
+AS
+DELETE UserSecurityQuestions
+FROM UserSecurityQuestions uq
+JOIN UserSecurityAnswers ua
+ON ua.UserSecurityQuestionID = uq.UserSecurityQuestionID
+JOIN UserLogins ul
+ON ua.UserLoginID = ul.UserLoginID
+WHERE ul.UserLoginID = @UserLoginID;
+GO
+
+EXEC sp_Delete_Question 5;
+GO
+
+--Q12. Delete all error logs created in the last hour. 
+
+DROP PROCEDURE sp_Delete_Errors;
+GO
+
+CREATE PROCEDURE sp_Delete_Errors
+AS
+delete FROM LoginErrorLog
+WHERE  ErrorTime BETWEEN DATEADD(hh, -1, GETDATE()) AND GETDATE();
+GO
+
+EXEC sp_Delete_Errors;
+GO
+
+--Q13. Write a query to remove SSN column from Customer table. 
+
+DROP PROCEDURE sp_Remove_Column;
+GO
+
+CREATE PROCEDURE sp_Remove_Column
+AS
+ALTER TABLE CUSTOMER
+DROP COLUMN CustomerAddress1;
+GO
+
+EXEC sp_Remove_Column;
+GO
