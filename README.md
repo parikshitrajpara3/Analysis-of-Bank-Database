@@ -1,16 +1,85 @@
-Introduction:
-There are only two types of accounts at this time: Checking and Savings accounts. The provided column list should be separated into appropriate entities (tables) 
-with relationships between these entities defined. The most efficient choices as far as your primary key constraints and foreign key constraints, 
-and picked the appropriate data types for each of the columns.
+# Banking System Database Project
 
-Project Goals:
-The goal of the project is to understand database entities in more depth and have practical experience of working with different objects of SQL.
+## Project Overview
+A comprehensive SQL database system designed for banking operations, implementing complex relationships between customers, accounts, transactions, and security features. The system demonstrates advanced SQL concepts and database management skills through real-world banking scenarios.
 
-Phase I:
-Create a database for a banking application called “Bank”.
-Create all the tables mentioned in the database diagram.
-Create all the constraints based on the database diagram.
-Insert at least 5 rows in each table.
+## Database Schema
+The database consists of multiple interconnected entities managing various banking operations:
+- Customer Management (Customer, CustomerAccount)
+- Account Operations (Account, AccountType, AccountStatusType)
+- Transaction Handling (Transaction, TransactionType, FailedTransaction)
+- Security Implementation (UserLogin, UserSecurityAnswers, UserSecurityQuestions)
+- Employee Management (Employee)
 
-Phase II:
-Create Stored procedures for various functions
+## Technical Implementation
+
+### Key Features
+- Multi-level account management system
+- Secure user authentication and authorization
+- Comprehensive transaction tracking
+- Failed transaction logging and monitoring
+- Customer relationship management
+- Employee data management
+
+### SQL Concepts Demonstrated
+- Complex JOIN operations (INNER, LEFT, RIGHT joins)
+- Stored Procedures for routine operations
+- Common Table Expressions (CTEs) for advanced queries
+- Primary and Foreign Key constraints
+- Data integrity through proper relationships
+- Transaction management
+- Index optimization
+
+### Advanced Queries Implemented
+- Account balance calculation and updates
+- Transaction history tracking
+- Customer profile management
+- Security question handling
+- Failed transaction analysis
+- Account status monitoring
+
+## Tools & Technologies
+- SQL Server
+- Entity-Relationship Diagram (ERD) tools
+- Database Management System (DBMS)
+
+## Project Highlights
+- Implemented secure user authentication system
+- Designed efficient transaction processing
+- Created comprehensive error logging
+- Established proper referential integrity
+- Optimized query performance
+- Developed stored procedures for routine operations
+
+## Skills Demonstrated
+- Database Design
+- SQL Query Optimization
+- Data Modeling
+- Entity Relationship Diagrams
+- Transaction Management
+- Security Implementation
+- Performance Tuning
+
+## Future Enhancements
+- Implementation of additional security features
+- Advanced reporting capabilities
+- Performance optimization for large datasets
+- Integration with external payment systems
+- Mobile banking features support
+
+## Getting Started
+1. Clone the repository
+2. Execute the schema creation scripts
+3. Run the initial data population scripts
+4. Test with provided sample queries
+
+## Documentation
+Detailed documentation including:
+- Database schema
+- Entity relationships
+- Stored procedures
+- Sample queries
+- Test cases
+
+---
+*Note: This project was developed as part of SQL learning and implementation practice, demonstrating proficiency in database design and SQL query writing.*
